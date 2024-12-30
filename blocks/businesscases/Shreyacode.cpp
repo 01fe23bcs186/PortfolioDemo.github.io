@@ -1,4 +1,4 @@
-//Unemployment rate calculation using dijkstra's
+//1a.Unemployment rate calculation using dijkstra's
 #include <iostream>
 #include <vector>
 #include <queue>
@@ -58,7 +58,7 @@ int main() {
 
     return 0;
 }
-//Unemployment rate calculation using bellmanford algorithm
+//1b.Unemployment rate calculation using bellmanford algorithm
 #include <iostream>
 #include <vector>
 #include <climits>
@@ -113,7 +113,7 @@ int main() {
 
     return 0;
 }
-//Job matching code for kmp
+//2a.Job matching code for kmp
 #include <iostream>
 #include <vector>
 #include <string>
@@ -204,7 +204,7 @@ int main() {
 
     return 0;
 }
-//Job matching code for rabin karp
+//2b.Job matching code for rabin karp
 #include <iostream>
 #include <vector>
 #include <string>
