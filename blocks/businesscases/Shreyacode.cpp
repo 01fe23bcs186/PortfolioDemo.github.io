@@ -170,15 +170,20 @@ int main() {
 
     cout << "\nMatching Results:\n";
     for (int i = 0; i < n; i++) {
+        bool matchFound = false; // Flag to track if any job matches
         cout << "Job Seeker " << i + 1 << " (" << jobSeekersSkills[i] << ") matches:\n";
         for (int j = 0; j < m; j++) {
             if (KMPSearch(jobSeekersSkills[i], jobRequirements[j])) {
                 cout << "  - Job " << j + 1 << " (" << jobRequirements[j] << ")\n";
+                matchFound = true; // A match is found
             }
+        }
+        if (!matchFound) {
+            cout << "  No job matches Job Seeker " << i + 1 << "'s skills.\n"; // Display message if no match is found
         }
     }
 
-    return 0;
+    return 0;
 }
 //2b.Job matching code for rabin karp
 #include <iostream>
@@ -226,6 +231,7 @@ bool rabinKarp(const string &text, const string &pattern) {
 
 int main() {
     int n, m;
+    cout << "Enter number of job seekers: " << endl;
     cin >> n;
     cin.ignore();
     vector<string> jobSeekersSkills(n);
@@ -233,6 +239,7 @@ int main() {
         getline(cin, jobSeekersSkills[i]);
     }
 
+    cout << "Enter number of job requirements: " << endl;
     cin >> m;
     cin.ignore();
     vector<string> jobRequirements(m);
@@ -240,15 +247,24 @@ int main() {
         getline(cin, jobRequirements[i]);
     }
 
+    bool foundMatch = false;
     for (int i = 0; i < n; i++) {
+        bool matchFoundForCurrentSeeker = false;
         for (int j = 0; j < m; j++) {
             if (rabinKarp(jobSeekersSkills[i], jobRequirements[j])) {
                 cout << "Job Seeker " << i + 1 << " matches Job " << j + 1 << endl;
+                matchFoundForCurrentSeeker = true;
+                foundMatch = true;
             }
+        }
+        if (!matchFoundForCurrentSeeker) {
+            cout << "Job Seeker " << i + 1 << " has no matching jobs." << endl;
         }
     }
 
-    return 0;
+    if (!foundMatch) {
+        cout << "No job matches any job seeker's skills." << endl;
+    }
+
+    return 0;
 }
-
-
