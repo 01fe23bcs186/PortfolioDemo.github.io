@@ -1,118 +1,94 @@
-//1a.Unemployment rate calculation using dijkstra's
+//1a.Unemployment rate calculation using Array
 #include <iostream>
-#include <vector>
-#include <queue>
-#include <climits>
+#include <algorithm>
+
 using namespace std;
 
-struct Edge {
-    int to;
-    int weight;
-};
+double calculateUnemploymentRate(const int statusList[], int totalPeople) {
+    int unemployedPeople = count(statusList, statusList + totalPeople, 0);
 
-void dijkstra(int nodes, vector<vector<Edge>> &graph, int start, vector<int> &dist) {
-    dist.assign(nodes, INT_MAX);
-    dist[start] = 0;
-
-    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<>> pq;
-    pq.push({0, start});
-
-    while (!pq.empty()) {
-        int currentDist = pq.top().first;
-        int currentNode = pq.top().second;
-        pq.pop();
-
-        if (currentDist > dist[currentNode]) continue;
-
-        for (const Edge &edge : graph[currentNode]) {
-            int newDist = currentDist + edge.weight;
-            if (newDist < dist[edge.to]) {
-                dist[edge.to] = newDist;
-                pq.push({newDist, edge.to});
-            }
-        }
+    if (totalPeople == 0) {
+        return 0.0;
     }
+
+    double unemploymentRate = (static_cast<double>(unemployedPeople) / totalPeople) * 100;
+    return unemploymentRate;
 }
 
 int main() {
-    int nodes, edges, start;
-    cin >> nodes >> edges;
+    int totalPeople;
 
-    vector<vector<Edge>> graph(nodes);
-    for (int i = 0; i < edges; i++) {
-        int u, v, w;
-        cin >> u >> v >> w;
-        graph[u].push_back({v, w});
-        graph[v].push_back({u, w}); // Assuming undirected graph
+    // Get the number of people from the user
+    cout << "Enter the total number of people: ";
+    cin >> totalPeople;
+
+    // Create an array to hold the employment status
+    int *employmentStatus = new int[totalPeople];
+
+    // Get the employment status from the user
+    cout << "Enter the employment status (1 for employed, 0 for unemployed) for each person:\n";
+    for (int i = 0; i < totalPeople; ++i) {
+        cin >> employmentStatus[i];
     }
 
-    cin >> start;
+    double unemploymentRate = calculateUnemploymentRate(employmentStatus, totalPeople);
+    cout << "Unemployment Rate: " << unemploymentRate << "%" << endl;
 
-    vector<int> dist;
-    dijkstra(nodes, graph, start, dist);
+    // Free the allocated memory
+    delete[] employmentStatus;
 
-    cout << "Shortest distances from node " << start << ":\n";
-    for (int i = 0; i < nodes; i++) {
-        cout << "To node " << i << ": " << (dist[i] == INT_MAX ? -1 : dist[i]) << endl;
-    }
-
-    return 0;
+    return 0;
 }
-//1b.Unemployment rate calculation using bellmanford algorithm
+
+//1b.Unemployment rate calculation using hash table
 #include <iostream>
-#include <vector>
-#include <climits>
+#include <unordered_map>
+
 using namespace std;
 
-struct Edge {
-    int from, to, weight;
-};
+double calculateUnemploymentRate(const unordered_map<int, int>& statusMap) {
+    int totalPeople = statusMap.size();
+    int unemployedPeople = 0;
 
-bool bellmanFord(int nodes, int edges, vector<Edge> &graph, int start, vector<int> &dist) {
-    dist.assign(nodes, INT_MAX);
-    dist[start] = 0;
-
-    for (int i = 1; i < nodes; i++) {
-        for (const Edge &edge : graph) {
-            if (dist[edge.from] != INT_MAX && dist[edge.from] + edge.weight < dist[edge.to]) {
-                dist[edge.to] = dist[edge.from] + edge.weight;
-            }
+    for (const auto& pair : statusMap) {
+        if (pair.second == 0) {
+            unemployedPeople++;
         }
     }
 
-    // Check for negative-weight cycles
-    for (const Edge &edge : graph) {
-        if (dist[edge.from] != INT_MAX && dist[edge.from] + edge.weight < dist[edge.to]) {
-            return false; // Negative cycle detected
-        }
+    if (totalPeople == 0) {
+        return 0.0;
     }
 
-    return true;
+    double unemploymentRate = (static_cast<double>(unemployedPeople) / totalPeople) * 100;
+    return unemploymentRate;
 }
 
 int main() {
-    int nodes, edges, start;
-    cin >> nodes >> edges;
+    unordered_map<int, int> employmentStatus;
+    int totalPeople;
 
-    vector<Edge> graph(edges);
-    for (int i = 0; i < edges; i++) {
-        cin >> graph[i].from >> graph[i].to >> graph[i].weight;
+    // Get the number of people from the user
+    cout << "Enter the total number of people: ";
+    cin >> totalPeople;
+
+    // Get the employment status from the user
+    cout << "Enter the employment status (1 for employed, 0 for unemployed) for each person:\n";
+    for (int i = 0; i < totalPeople; ++i) {
+        int id, status;
+        cout << "Person " << i + 1 << " - ID: ";
+        cin >> id;
+        cout << "Employment Status: ";
+        cin >> status;
+        employmentStatus[id] = status;
     }
 
-    cin >> start;
+    double unemploymentRate = calculateUnemploymentRate(employmentStatus);
+    cout << "Unemployment Rate: " << unemploymentRate << "%" << endl;
 
-    vector<int> dist;
-    if (bellmanFord(nodes, edges, graph, start, dist)) {
-        cout << "Shortest distances from node " << start << ":\n";
-        for (int i = 0; i < nodes; i++) {
-            cout << "To node " << i << ": " << (dist[i] == INT_MAX ? -1 : dist[i]) << endl;
-        }
-    } else {
-        cout << "Negative-weight cycle detected.\n";
-    }
-
-    return 0;
+    return 0;
 }
+
 //2a.Job matching code for kmp
 #include <iostream>
 #include <vector>
